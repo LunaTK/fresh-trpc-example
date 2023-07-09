@@ -6,24 +6,35 @@ import { Button } from "../components/Button.tsx";
 import { trpc } from "../utils/trpc.ts";
 
 export default function Counter() {
-  const [helloResponse, setHelloResponse] = useState('');
-  const [posts, setPosts] = useState<{name: string}[]>([]);
+  const [helloResponse, setHelloResponse] = useState("");
+  const [posts, setPosts] = useState<{ name: string }[]>([]);
 
-  const fetchPosts = () => trpc.query("post.get").then(setPosts)
+  const fetchPosts = () => trpc["post.get"].query().then(setPosts);
 
   return (
     <div>
-      <Button onClick={() => {
-        trpc.query("hello").then(setHelloResponse)
-      }}>Hello</Button>
+      <Button
+        onClick={() => {
+          trpc["hello"].query().then(setHelloResponse);
+        }}
+      >
+        Hello
+      </Button>
 
       {helloResponse}
 
       <hr />
 
-      <Button onClick={() => {
-        trpc.mutation("post.create", {name: `Random post ${Math.random()}`}).then(fetchPosts)
-      }}>Create Random Post</Button>
+      <Button
+        onClick={() => {
+          trpc["post.create"].mutate({ name: `Random Post ${Math.random()}` })
+            .then(
+              fetchPosts,
+            );
+        }}
+      >
+        Create Random Post
+      </Button>
 
       <hr />
 
@@ -32,8 +43,6 @@ export default function Counter() {
       <ul>
         {posts.map((post, i) => <li key={i}>{post.name}</li>)}
       </ul>
-
     </div>
-    
   );
 }
